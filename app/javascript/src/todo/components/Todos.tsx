@@ -47,7 +47,7 @@ const fetchTodos = gql`
 const Todos: React.FC = () => {
   const [todoList, setTodoList] = React.useState([]);
   const [sortOption, setSortOption] = React.useState('title asc');
-  const [pagination, setPagination] = React.useState({ current: 1, pageSize: 1, total: 0 });
+  const [pagination, setPagination] = React.useState({ current: 1, pageSize: 2, total: 0 });
   const [pageInfo, setPageInfo] = React.useState({} as PageInfo);
   const { data, loading, refetch } = useQuery<any, FetchVariables>(fetchTodos, {
     variables: {
