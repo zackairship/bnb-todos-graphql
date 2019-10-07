@@ -7,6 +7,7 @@ import AppProviders from './context';
 import Navigation from './components/Navigation';
 import UserRegister from './components/UserRegister';
 import UserLogin from './components/UserLogin';
+import UserLogout from './components/UserLogout';
 import Todos from './components/Todos';
 import Home from './components/Home';
 
@@ -24,6 +25,7 @@ const App: React.FC = () => {
               <Switch>
                 <Route path="/register"><UserRegister /></Route>
                 <Route path="/login"><UserLogin /></Route>
+                <Route path="/logout"><UserLogout /></Route>
                 <Route path="/todos"><Todos /></Route>
                 <Route path="/"><Home /></Route>
               </Switch>

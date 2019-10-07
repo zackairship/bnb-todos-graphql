@@ -1,4 +1,4 @@
-class TodoPolicy < ApplicationPolicy
+class TodoPolicy < AuthenticatedPolicy
   def index?
     true
   end

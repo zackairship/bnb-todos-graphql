@@ -1,23 +1,18 @@
 import React from 'react';
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '@apollo/react-hooks';
 
+import { AuthTokenProvider } from './AuthTokenContext';
 import { UserProvider } from './UserContext';
+import ApolloContext from './ApolloContext';
 
 const AppProviders: React.FC = ({ children }) => {
-  const client = new ApolloClient({
-    uri: 'http://localhost:3000/graphql',
-    headers: {
-      'Authorization': 'Bearer abc123'
-    }
-  });
-
   return (
-    <ApolloProvider client={client}>
-      <UserProvider>
-        {children}
-      </UserProvider>
-    </ApolloProvider>
+    <AuthTokenProvider>
+      <ApolloContext>
+        <UserProvider>
+          {children}
+        </UserProvider>
+      </ApolloContext>
+    </AuthTokenProvider>
   )
 };
 

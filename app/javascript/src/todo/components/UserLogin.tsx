@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import { Row, Form, Input, Button, Alert } from 'antd';
 
 import { UserContext } from '../context/UserContext';
+import { AuthTokenContext } from '../context/AuthTokenContext';
 
 type UserLoginValues = {
   email: string;
@@ -35,7 +36,8 @@ const validationSchema = yup.object().shape({
 const UserLogin: React.FC = () => {
   const [message, setMessage] = React.useState(null);
   const history = useHistory();
-  const { authenticated, setJwt } = useContext(UserContext);
+  const { setJwt } = useContext(AuthTokenContext)
+  const { authenticated } = useContext(UserContext);
   const [createUserSession] = useMutation(createUserSessionMutation);
 
   if (authenticated === true) {

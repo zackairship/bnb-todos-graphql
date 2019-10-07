@@ -72,6 +72,16 @@ type Query {
     """
     last: Int
   ): TodoConnection
+
+  """
+  Retrieve the current user or a user given an ID
+  """
+  user(
+    """
+    The ID of the user to retrieve
+    """
+    id: ID
+  ): User
 }
 
 type Todo {
@@ -115,6 +125,12 @@ type TodoEdge {
   The item at the end of the edge.
   """
   node: Todo
+}
+
+type User {
+  email: String!
+  firstName: String!
+  lastName: String!
 }
 
 input UserInput {
