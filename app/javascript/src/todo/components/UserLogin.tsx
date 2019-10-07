@@ -8,16 +8,14 @@ import { Row, Form, Input, Button, Alert } from 'antd';
 
 import { UserContext } from '../context/UserContext';
 
-type UserRegistrationValues = {
+type UserLoginValues = {
   email: string;
   password: string;
-  firstName: string;
-  lastName: string;
 };
 
-const createUserMutation = gql`
-  mutation createUser($user: UserInput!) {
-    createUser(user: $user) {
+const createUserSessionMutation = gql`
+  mutation createUserSession($email: String!, $password: String!) {
+    createUserSession(email: $email, password: $password) {
       jwt
       errors
     }
@@ -31,39 +29,34 @@ const validationSchema = yup.object().shape({
     .required('Please enter an email address.'),
   password: yup
     .string()
-    .required('Please enter a password.'),
-  firstName: yup
-    .string()
-    .required('Please enter a first name.'),
-  lastName: yup
-    .string()
-    .required('Please enter a last name.')
+    .required('Please enter a password.')
 });
 
-const UserRegister: React.FC = () => {
+const UserLogin: React.FC = () => {
   const [message, setMessage] = React.useState(null);
   const history = useHistory();
   const { authenticated, setJwt } = useContext(UserContext);
-  const [createUser] = useMutation(createUserMutation);
+  const [createUserSession] = useMutation(createUserSessionMutation);
 
   if (authenticated === true) {
     return <Redirect to="/" />;
   }
 
-  const onSubmit = async (values: UserRegistrationValues) => {
+  const onSubmit = async (values: UserLoginValues) => {
     setMessage(null);
     try {
-      const { data } = await createUser({
+      const { data } = await createUserSession({
         variables: {
-          user: values
+          email: values.email,
+          password: values.password
         }
       });
 
-      if (data.createUser.jwt !== null) {
-        setJwt(data.createUser.jwt);
+      if (data.createUserSession.jwt !== null) {
+        setJwt(data.createUserSession.jwt);
         history.push('/');
       } else {
-        setMessage('There was an error creating your account.');
+        setMessage(data.createUserSession.errors[0]);
       }
     } catch(error) {
       console.log(error);
@@ -77,17 +70,17 @@ const UserRegister: React.FC = () => {
       {message && <Alert type="error" message={message} />}
 
       <Formik
-        initialValues={{ email: '', password: '', firstName: '', lastName: '' }}
+        initialValues={{ email: '', password: '' }}
         validationSchema={validationSchema}
         onSubmit={(
-          values: UserRegistrationValues,
-          actions: FormikActions<UserRegistrationValues>
+          values: UserLoginValues,
+          actions: FormikActions<UserLoginValues>
         ) => {
           onSubmit(values);
           actions.setSubmitting(false);
         }}
         render={(
-          formikBag: FormikProps<UserRegistrationValues>
+          formikBag: FormikProps<UserLoginValues>
         ) => (
           <Form layout="vertical" onSubmit={formikBag.handleSubmit}>
             <Field
@@ -95,7 +88,7 @@ const UserRegister: React.FC = () => {
               render={({
                 field,
                 form
-              }: FieldProps<UserRegistrationValues>) => (
+              }: FieldProps<UserLoginValues>) => (
                 <Form.Item label="Email">
                   <Input type="text" {...field} />
                   {form.errors.email && form.touched.email ? (
@@ -110,41 +103,11 @@ const UserRegister: React.FC = () => {
               render={({
                 field,
                 form
-              }: FieldProps<UserRegistrationValues>) => (
+              }: FieldProps<UserLoginValues>) => (
                 <Form.Item label="Password">
                   <Input type="password" {...field} />
                   {form.errors.email && form.touched.email ? (
                     <p>{form.errors.password}</p>
-                  ) : null}
-                </Form.Item>
-              )}
-            />
-
-            <Field
-              name="firstName"
-              render={({
-                field,
-                form
-              }: FieldProps<UserRegistrationValues>) => (
-                <Form.Item label="First Name">
-                  <Input type="text" {...field} />
-                  {form.errors.firstName && form.touched.firstName ? (
-                    <p>{form.errors.firstName}</p>
-                  ) : null}
-                </Form.Item>
-              )}
-            />
-
-            <Field
-              name="lastName"
-              render={({
-                field,
-                form
-              }: FieldProps<UserRegistrationValues>) => (
-                <Form.Item label="Last Name">
-                  <Input type="text" {...field} />
-                  {form.errors.lastName && form.touched.lastName ? (
-                    <p>{form.errors.lastName}</p>
                   ) : null}
                 </Form.Item>
               )}
@@ -156,7 +119,7 @@ const UserRegister: React.FC = () => {
                 htmlType="submit"
                 loading={formikBag.isSubmitting}
               >
-                Register
+                Login
               </Button>
             </Form.Item>
           </Form>
@@ -166,4 +129,4 @@ const UserRegister: React.FC = () => {
   );
 };
 
-export default UserRegister;
+export default UserLogin;
