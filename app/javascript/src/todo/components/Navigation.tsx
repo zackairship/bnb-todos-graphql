@@ -12,6 +12,10 @@ const AuthenticatedMenu: React.FC<MenuProps> = (props) => {
         <Link to="/">Home</Link>
       </Menu.Item>
 
+      <Menu.Item key="/todos">
+        <Link to="/todos">Todos</Link>
+      </Menu.Item>
+
       <Menu.Item key="/logout">
         <Link to="/logout">Logout</Link>
       </Menu.Item>
